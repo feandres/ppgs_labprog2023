@@ -32,13 +32,28 @@ public class Orientacao {
     @Column(name="id_orientacao")
     Integer id;
 
+    @Column(name="tipo")
     String tipo;
+
+    @Column(name = "discente")
     String discente;
+
+    @Column(name = "titulo")
     String titulo;
+
+    @Column(name = "ano")
     Integer ano;
+
+    @Column(name = "modalidade")
     String modalidade;
+
+    @Column(name = "instituicao")
     String instituicao;
+
+    @Column(name = "curso")
     String curso;
+
+    @Column(name = "status")
     String status;
 
     @ManyToOne
