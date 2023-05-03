@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @SpringBootTest
@@ -114,7 +115,8 @@ public class DocenteTest {
     @Test
     public void deveSalvarDocentComTecnica() throws ParseException {
         //cenario
-        Docente novDocente = Docente.builder().nome("Geraldo Braz Junior")
+        Docente novDocente = Docente.builder()
+                                            .nome("Geraldo Braz Junior")
                                             .lattes("123")
                                             .dataAtualizacao(new SimpleDateFormat("dd/MM/yyyy").parse("23/04/2023"))
                                             .build();
@@ -147,15 +149,15 @@ public class DocenteTest {
     public void deveSalvarDocenteComProducao () throws ParseException {
         //cenário
         Producao novaProducao = Producao.builder()
-                .tipo("teste tipo producao")
-                .titulo("teste titulo producao")
-                .ano(2023)
-                .build();
+                                                .tipo("teste tipo producao")
+                                                .titulo("teste titulo producao")
+                                                .ano(2023)
+                                                .build();
         Docente novDocente = Docente.builder()
-                .nome("Mikael Barros")
-                .lattes("123")
-                .dataAtualizacao(new SimpleDateFormat("dd/MM/yyyy").parse("23/04/2023"))
-                .build();
+                                            .nome("Mikael Barros")
+                                            .lattes("123")
+                                            .dataAtualizacao(new SimpleDateFormat("dd/MM/yyyy").parse("23/04/2023"))
+                                            .build();
 
         Producao prodSalva = prod.save(novaProducao);
         Docente docSalvo = repo.save(novDocente);
@@ -184,24 +186,25 @@ public class DocenteTest {
         Docente docSalvo = repo.save(novDocente);
 
         //acao
-        novDocente.setDataAtualizacao(new SimpleDateFormat("dd/MM/yyyy").parse("03/05/2023"));
-
-        Docente docSalvo2 = repo.save(novDocente);
+        docSalvo.setNome("nome_teste");
+        Docente novoDocSalvo = repo.save(docSalvo);
 
         //teste
-        Assertions.assertNotNull(docSalvo);
-        Assertions.assertEquals(docSalvo.getDataAtualizacao(), docSalvo2.getDataAtualizacao());
+        Assertions.assertNotEquals(novoDocSalvo.getDataAtualizacao(), docSalvo.getDataAtualizacao());
     }
-/* 
+
     @Test
     public void deveImpedirRemoverDocenteComDependencia() throws ParseException {
         //cenario
-        Docente novDocente = Docente.builder().nome("Geraldo Braz Junior")
+        Docente novDocente = Docente.builder()
+                                            .nome("Geraldo Braz Junior")
                                             .lattes("123")
                                             .dataAtualizacao(new SimpleDateFormat("dd/MM/yyyy").parse("23/04/2023"))
                                             .build();
 
-        Tecnica novTecnica = Tecnica.builder().id(1).tipo("teste_tipo").titulo("teste_titulo")
+        Tecnica novTecnica = Tecnica.builder()
+                                            .tipo("teste_tipo")
+                                            .titulo("teste_titulo")
                                             .ano(2023)
                                             .financiadora("teste_financiadora")
                                             .outrasInformacoes("teste_outrasInformacoes")
@@ -209,7 +212,9 @@ public class DocenteTest {
                                             .qtdMestrado(2)
                                             .qtdDoutorado(3).build();
 
-        Orientacao novaOrientacao = Orientacao.builder().id(1).tipo("teste").discente("teste_disc")
+        Orientacao novaOrientacao = Orientacao.builder()
+                                            .tipo("teste")
+                                            .discente("teste_disc")
                                             .titulo("teste_titulo")
                                             .ano(2023)
                                             .modalidade("teste_modalidade")
@@ -224,8 +229,8 @@ public class DocenteTest {
                                             .ano(2023)
                                             .build();
 
-        Programa novoPPg = Programa.builder().nome("PPGCC").build();
-
+        Programa novoPPg = Programa.builder()
+                                            .nome("PPGCC").build();
 
         Docente docSalvo = repo.save(novDocente);        
         Tecnica tecSalvo = tecn.save(novTecnica);
@@ -233,8 +238,6 @@ public class DocenteTest {
         Producao prodSalva = prod.save(novaProducao);
         Programa progSalvo = prog.save(novoPPg);
         
-        //acao
-
         ArrayList<Tecnica> tecnicas = new ArrayList<>();
         tecnicas.add(tecSalvo);
         docSalvo.setTecnicas(tecnicas);
@@ -250,9 +253,54 @@ public class DocenteTest {
         ArrayList<Producao> producoes = new ArrayList<>();
         producoes.add(prodSalva);
         docSalvo.setProducoes(producoes);
+        
+        //programa
+        Docente docenteSalvoSemPrograma = repo.save(novDocente);
+        programas.add(progSalvo);
+        docenteSalvoSemPrograma.setProgramas(programas);
+        Docente docenteSalvoComPrograma = repo.save(docenteSalvoSemPrograma);
+
+        //tecnica
+        Docente docenteSalvoSemTecnica = repo.save(novDocente);
+        docenteSalvoSemTecnica.setTecnicas(tecnicas);
+        Docente docenteSalvoComTecnica = repo.save(docenteSalvoSemTecnica);
+
+        //orientacao
+        Docente docenteSalvoSemOrientacao = repo.save(novDocente);
+        orientacoes.add(orientSalvo);
+        docenteSalvoSemOrientacao.setOrientacoes(orientacoes);
+        Docente docenteSalvoComOrientacao = repo.save(docenteSalvoSemOrientacao);
+
+        //producao
+        Docente docenteSalvoSemProducao = repo.save(novDocente);
+        producoes.add(prodSalva);
+        docenteSalvoSemProducao.setProducoes(producoes);
+        Docente docenteSalvoComProducao = repo.save(docenteSalvoSemProducao);
+
+        //acao
+        repo.delete(docenteSalvoComPrograma);
+
+        repo.delete(docenteSalvoComTecnica);
+
+        repo.delete(docenteSalvoComOrientacao);
+
+        repo.delete(docenteSalvoComProducao);
 
         //teste
-        
+        // Programa
+        Optional<Docente> docenteComPrograma = repo.findById(docenteSalvoComPrograma.id);
+        Assertions.assertNotNull(docenteComPrograma);
+
+        // Orientacao
+        Optional<Docente> docenteComOrientacao = repo.findById(docenteSalvoComOrientacao.id);
+        Assertions.assertNotNull(docenteComOrientacao);
+
+        // Tecnica
+        Optional<Docente> docenteComTecnica = repo.findById(docenteSalvoComTecnica.id);
+        Assertions.assertNotNull(docenteComTecnica);
+
+        // Producao
+        Optional<Docente> docenteComProducao = repo.findById(docenteSalvoComProducao.id);
+        Assertions.assertNotNull(docenteComProducao);
     }
-    */
 }

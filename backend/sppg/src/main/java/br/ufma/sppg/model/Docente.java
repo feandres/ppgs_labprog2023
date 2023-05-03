@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -62,7 +63,6 @@ public class Docente {
     )
     List<Producao> producoes;
 
-
     @ManyToMany()
     @JoinTable(
         name="docente_tecnica",
@@ -73,5 +73,10 @@ public class Docente {
 
     @OneToMany(mappedBy = "orientador")    
     List<Orientacao> orientacoes;
+
+    @PreUpdate
+    protected void onUpdate() {
+        dataAtualizacao = new Date();
+    }
 
 }
