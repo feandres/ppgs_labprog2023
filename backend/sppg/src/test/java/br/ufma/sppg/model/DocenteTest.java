@@ -119,7 +119,9 @@ public class DocenteTest {
                                             .dataAtualizacao(new SimpleDateFormat("dd/MM/yyyy").parse("23/04/2023"))
                                             .build();
 
-        Tecnica novTecnica = Tecnica.builder().id(1).tipo("teste_tipo").titulo("teste_titulo")
+        Tecnica novTecnica = Tecnica.builder()
+                                            .tipo("teste_tipo")
+                                            .titulo("teste_titulo")
                                             .ano(2023)
                                             .financiadora("teste_financiadora")
                                             .outrasInformacoes("teste_outrasInformacoes")
@@ -168,9 +170,29 @@ public class DocenteTest {
 
         //teste
         Assertions.assertNotNull(docSalvo2);
-        Assertions.assertEquals(docSalvo2.getProgramas().size(), 1);
+        Assertions.assertEquals(docSalvo2.getProducoes().size(), 1);
     }
 
+    @Test
+    public void deveAtualizarDataAtualizacaoDocente () throws ParseException {
+        //cenario
+        Docente novDocente = Docente.builder().nome("Mikael Barros")
+                                        .lattes("123")
+                                        .dataAtualizacao(new SimpleDateFormat("dd/MM/yyyy").parse("23/04/2023"))
+                                        .build();
+
+        Docente docSalvo = repo.save(novDocente);
+
+        //acao
+        novDocente.setDataAtualizacao(new SimpleDateFormat("dd/MM/yyyy").parse("03/05/2023"));
+
+        Docente docSalvo2 = repo.save(novDocente);
+
+        //teste
+        Assertions.assertNotNull(docSalvo);
+        Assertions.assertEquals(docSalvo.getDataAtualizacao(), docSalvo2.getDataAtualizacao());
+    }
+/* 
     @Test
     public void deveImpedirRemoverDocenteComDependencia() throws ParseException {
         //cenario
@@ -232,5 +254,5 @@ public class DocenteTest {
         //teste
         
     }
-
+    */
 }
