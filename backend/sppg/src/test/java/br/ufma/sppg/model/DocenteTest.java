@@ -15,6 +15,7 @@ import br.ufma.sppg.repo.TecnicaRepository;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,14 +64,14 @@ public class DocenteTest {
 
         Docente novDocente = Docente.builder().nome("Geraldo Braz Junior")
                                         .lattes("123")
-                                        .dataAtualizacao(new SimpleDateFormat("dd/MM/yyyy").parse("23/04/2023"))
+                                        .dataAtualizacao(new SimpleDateFormat("dd/MM/yyyy"))
                                         .build();
         
         Programa progSalvo = prog.save(novoPPg);
         Docente docSalvo = repo.save(novDocente);
 
         //ação
-        ArrayList<Programa> programas = new ArrayList<>();
+        List<Programa> programas = new ArrayList<Programa>();
         programas.add(progSalvo);
         docSalvo.setProgramas(programas);
         
