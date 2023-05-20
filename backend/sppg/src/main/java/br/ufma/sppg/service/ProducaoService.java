@@ -15,7 +15,7 @@ import br.ufma.sppg.repo.DocenteRepository;
 import br.ufma.sppg.repo.OrientacaoRepository;
 import br.ufma.sppg.repo.ProducaoRepository;
 import br.ufma.sppg.repo.ProgramaRepository;
-import br.ufma.sppg.service.exceptions.RegrasRunTime;
+import br.ufma.sppg.service.exceptions.CustomMessageRuntimeException;
 import jakarta.transaction.Transactional;
 
 
@@ -38,7 +38,7 @@ public class ProducaoService {
     @Autowired
     OrientacaoRepository oriRepo;
 
-    public List<Producao>obterProducoesPPG(Integer idPrograma, Integer data1, Integer data2){
+    public List<Producao> obterProducoesPPG(Integer idPrograma, Integer data1, Integer data2){
 
 
         //É Presumido que o usuário coloque em data1 o valor mais baixo e em data2 o valor mais alto como por exemplo
@@ -55,7 +55,7 @@ public class ProducaoService {
             //Verificando se o Programa possui Docentes cadastrados
             if(progRepo.getReferenceById(idPrograma).getDocentes() == null 
             || progRepo.getReferenceById(idPrograma).getDocentes().isEmpty())
-                throw new RegrasRunTime("O programa não possui Docentes cadastrados");
+                throw new CustomMessageRuntimeException("O programa não possui Docentes cadastrados");
 
             ArrayList<Producao> producoes = new ArrayList<>();
 
@@ -73,11 +73,11 @@ public class ProducaoService {
                 }
             }
             if(producoes.isEmpty())
-                throw new RegrasRunTime("O Programa não possui Docentes com Produções no periodo especificado");
+                throw new CustomMessageRuntimeException("O Programa não possui Docentes com Produções no periodo especificado");
 
             return producoes;
         }
-        throw new RegrasRunTime("Programa Inexistente");
+        throw new CustomMessageRuntimeException("Programa Inexistente");
 
     };
 
@@ -96,7 +96,7 @@ public class ProducaoService {
 
             if(docRepo.getReferenceById(idDocente).getProducoes() == null 
             || docRepo.getReferenceById(idDocente).getProducoes().isEmpty())
-                throw new RegrasRunTime("O Docente não possui nenhuma Produção Registrada");
+                throw new CustomMessageRuntimeException("O Docente não possui nenhuma Produção Registrada");
 
             ArrayList<Producao> producoes = new ArrayList<>();
 
@@ -107,47 +107,47 @@ public class ProducaoService {
                 }
             }
             if(producoes.isEmpty())
-                throw new RegrasRunTime("O Docente não possui nenhuma Produção no periodo especificado");
+                throw new CustomMessageRuntimeException("O Docente não possui nenhuma Produção no periodo especificado");
 
             return producoes;
         }
-        throw new RegrasRunTime("Docente Inexistente");
+        throw new CustomMessageRuntimeException("Docente Inexistente");
     }
 
 
     
     private void verificarProducao(Producao producao){
         if(producao==null)
-            throw new RegrasRunTime("Produção deve ser Informada");
+            throw new CustomMessageRuntimeException("Produção deve ser Informada");
         if(producao.getTipo() == null || producao.getTipo() == "")
-            throw new RegrasRunTime("O tipo da Produção deve ser informado");
+            throw new CustomMessageRuntimeException("O tipo da Produção deve ser informado");
         if(producao.getIssnOuSigla() == null || producao.getIssnOuSigla() == "")
-            throw new RegrasRunTime("A Issn/Sigla da Produção deve ser informada");
+            throw new CustomMessageRuntimeException("A Issn/Sigla da Produção deve ser informada");
         if(producao.getNomeLocal() == null || producao.getNomeLocal() == "")
-            throw new RegrasRunTime("O nome local da Produção deve ser informado");
+            throw new CustomMessageRuntimeException("O nome local da Produção deve ser informado");
         if(producao.getTitulo() == null || producao.getTitulo() == "")
-            throw new RegrasRunTime("O titulo da Produção deve ser informado");
+            throw new CustomMessageRuntimeException("O titulo da Produção deve ser informado");
         if(producao.getAno() == null)
-            throw new RegrasRunTime("O ano da Produção deve ser Informado");
+            throw new CustomMessageRuntimeException("O ano da Produção deve ser Informado");
         if(producao.getAno() < 0)
-            throw new RegrasRunTime("Informe um ano válido para a Produção");
+            throw new CustomMessageRuntimeException("Informe um ano válido para a Produção");
         if(producao.getQualis() == null || producao.getQualis() == "")
-            throw new RegrasRunTime("A qualis da Produção deve ser informada");
+            throw new CustomMessageRuntimeException("A qualis da Produção deve ser informada");
         Float percentileOuH5 = producao.getPercentileOuH5();
         if(percentileOuH5 == null || percentileOuH5 < 0)
-            throw new RegrasRunTime("O percentile/h5 da Produção deve ser informado");
+            throw new CustomMessageRuntimeException("O percentile/h5 da Produção deve ser informado");
         if(producao.getQtdGrad() == null)
-            throw new RegrasRunTime("A quantidade de Graduandos da Produção deve ser informada");
+            throw new CustomMessageRuntimeException("A quantidade de Graduandos da Produção deve ser informada");
         if(producao.getQtdGrad() < 0)
-            throw new RegrasRunTime("Deve ser informado uma quantia real de Graduandos da Produção");
+            throw new CustomMessageRuntimeException("Deve ser informado uma quantia real de Graduandos da Produção");
         if(producao.getQtdMestrado() == null)
-            throw new RegrasRunTime("A quantidade de Mestrandos da Produção deve ser informada");
+            throw new CustomMessageRuntimeException("A quantidade de Mestrandos da Produção deve ser informada");
         if(producao.getQtdMestrado() < 0)
-            throw new RegrasRunTime("Deve ser informado uma quantia real de Mestrandos da Produção");
+            throw new CustomMessageRuntimeException("Deve ser informado uma quantia real de Mestrandos da Produção");
         if(producao.getQtdDoutorado() == null)
-            throw new RegrasRunTime("A quantidade de Doutorandos da Produção deve ser informada");
+            throw new CustomMessageRuntimeException("A quantidade de Doutorandos da Produção deve ser informada");
         if(producao.getQtdDoutorado() < 0)
-            throw new RegrasRunTime("Deve ser informado uma quantia real de Doutorandos da Produção");
+            throw new CustomMessageRuntimeException("Deve ser informado uma quantia real de Doutorandos da Produção");
     }
 
     @Transactional
@@ -163,7 +163,7 @@ public class ProducaoService {
             if(prodRepo.getReferenceById(idProducao).getOrientacoes() != null)
                 return prodRepo.getReferenceById(idProducao).getOrientacoes();
         }
-        throw new RegrasRunTime("A Producao não existe");
+        throw new CustomMessageRuntimeException("A Producao não existe");
     }
 /*
     public boolean excluirProducao(Integer idProducao){
