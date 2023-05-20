@@ -13,12 +13,11 @@ import br.ufma.sppg.repo.ProducaoRepository;
 import br.ufma.sppg.repo.ProgramaRepository;
 import br.ufma.sppg.service.exceptions.CustomMessageRuntimeException;
 import br.ufma.sppg.model.Docente;
-import br.ufma.sppg.model.Orientacao;
 import br.ufma.sppg.model.Producao;
 import br.ufma.sppg.model.Programa;
 
 @Service
-public class ProducaoServiveS7ven {
+public class ProducaoService {
     
     @Autowired
     ProducaoRepository producaoRepository;

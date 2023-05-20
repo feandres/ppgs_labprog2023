@@ -1,9 +1,6 @@
 package br.ufma.sppg.model;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,11 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import br.ufma.sppg.model.Orientacao;
 import br.ufma.sppg.repo.OrientacaoRepository;
-import br.ufma.sppg.model.Producao;
 import br.ufma.sppg.repo.ProducaoRepository;
-import br.ufma.sppg.model.Tecnica;
 import br.ufma.sppg.repo.TecnicaRepository;
 
 @SpringBootTest

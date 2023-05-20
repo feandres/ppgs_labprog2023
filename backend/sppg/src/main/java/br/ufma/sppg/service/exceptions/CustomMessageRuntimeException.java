@@ -1,7 +1,7 @@
 package br.ufma.sppg.service.exceptions;
 
-public class RegrasRunTime extends RuntimeException{
-    public RegrasRunTime(String mensagem){
-        super(mensagem);
+public class CustomMessageRuntimeException extends RuntimeException{
+    public CustomMessageRuntimeException(String message){
+        super(message);
     }
 }
