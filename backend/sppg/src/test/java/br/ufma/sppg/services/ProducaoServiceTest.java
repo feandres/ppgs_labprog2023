@@ -1,6 +1,5 @@
 package br.ufma.sppg.services;
 
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -15,7 +14,6 @@ import br.ufma.sppg.repo.DocenteRepository;
 import br.ufma.sppg.repo.ProducaoRepository;
 import br.ufma.sppg.repo.ProgramaRepository;
 import br.ufma.sppg.service.ProducaoService;
-
 
 @SpringBootTest
 public class ProducaoServiceTest {
@@ -36,16 +34,16 @@ public class ProducaoServiceTest {
 
     @Test
     public void deveRecuperarProducoesPorPrograma() throws ParseException {
-    //Cenario:
-        //Programa
+        // Cenario:
+        // Programa
         Programa novoPPg = Programa.builder().nome("Programa para Teste").build();
-        //Docente
+        // Docente
         Docente novoDocente = Docente.builder().nome("Geraldo Braz Junior")
                 .lattes("123")
                 .dataAtualizacao(new SimpleDateFormat("dd/MM/yyyy").parse("23/04/2023"))
                 .producoes(null)
                 .build();
-        //Producao
+        // Producao
         Producao novaProducao = Producao.builder().tipo("tipo_teste")
                 .ano(2019)
                 .issnOuSigla("sigla_teste")
@@ -58,7 +56,7 @@ public class ProducaoServiceTest {
                 .percentileOuH5(10)
                 .build();
 
-                Producao novaProducao2 = Producao.builder().tipo("tipo_teste2")
+        Producao novaProducao2 = Producao.builder().tipo("tipo_teste2")
                 .ano(2011)
                 .issnOuSigla("sigla_teste2")
                 .nomeLocal("nome_local_teste2")
@@ -69,8 +67,8 @@ public class ProducaoServiceTest {
                 .qtdDoutorado(10)
                 .percentileOuH5(10)
                 .build();
-                
-                Producao novaProducao3 = Producao.builder().tipo("tipo_teste3")
+
+        Producao novaProducao3 = Producao.builder().tipo("tipo_teste3")
                 .ano(2019)
                 .issnOuSigla("sigla_teste3")
                 .nomeLocal("nome_local_teste3")
@@ -82,7 +80,7 @@ public class ProducaoServiceTest {
                 .percentileOuH5(10)
                 .build();
 
-                Producao novaProducao4 = Producao.builder().tipo("tipo_teste4")
+        Producao novaProducao4 = Producao.builder().tipo("tipo_teste4")
                 .ano(2023)
                 .issnOuSigla("sigla_teste4")
                 .nomeLocal("nome_local_teste4")
@@ -93,16 +91,13 @@ public class ProducaoServiceTest {
                 .qtdDoutorado(10)
                 .percentileOuH5(10)
                 .build();
-        
-    //Acao:
-        //Save
+
+        // Acao:
+        // Save
         Programa programaSalvo = programaRepository.save(novoPPg);
         Docente docenteSalvo = docenteRepository.save(novoDocente);
         Producao producaoSalva = producaoRepository.save(novaProducao);
         //
-        
-        
-
 
     }
 }
