@@ -17,7 +17,9 @@ import br.ufma.sppg.repo.ProducaoRepository;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 
 @SpringBootTest
@@ -55,15 +57,15 @@ public class DocenteTest {
         // cenário
         Programa novoPPg = Programa.builder().nome("PPGCC").build();
         Docente novoDocente = Docente.builder().nome("Geraldo Braz Junior")
-                .lattes("123")
-                .dataAtualizacao(new SimpleDateFormat("dd/MM/yyyy").parse("23/04/2023"))
-                .build();
-
+                                        .lattes("123")
+                                        .dataAtualizacao(new SimpleDateFormat("dd/MM/yyyy").parse("23/05/2022"))
+                                        .build();
+        
         Programa progSalvo = prog.save(novoPPg);
         Docente docSalvo = repo.save(novoDocente);
 
-        // ação
-        ArrayList<Programa> programas = new ArrayList<>();
+        //ação
+        List<Programa> programas = new ArrayList<Programa>();
         programas.add(progSalvo);
         docSalvo.setProgramas(programas); // adicionar lista de programas em Docente
 
