@@ -33,6 +33,8 @@ public class ProducaoService {
     @Autowired
     OrientacaoRepository orientacaoRepository;
 
+    //Obter Producoes com base no ppg (programa)
+
     public List<Producao> obterProducoesPPG(Integer idPrograma, Integer anoInicial, Integer anoFinal) {
 
         // Se o usuário informa primeiro o ano maior e depois o menor, faz-se a inversão
@@ -74,6 +76,8 @@ public class ProducaoService {
 
     };
 
+    //Obter producoes com base no docente
+
     public List<Producao> obterProducoesDocente(Integer idDocente, Integer anoInicial, Integer anoFinal) {
 
         // Se o usuário informa primeiro o ano maior e depois o menor, faz-se a inversão
@@ -106,11 +110,18 @@ public class ProducaoService {
         throw new RegrasRunTime("Docente não encontrado.");
     }
 
+    //Atualizar as estatisticas de producao (integers)
+    @Transactional
+    public void informarEstatisticasProducao(Integer idProducao, Integer qtdGrad, Integer qtdMestrado, Integer qtdDoutorado) {
+        Producao producao = producaoRepository.findById(idProducao)
+                            .orElseThrow(() -> new RegrasRunTime("Produção não encontrada com o ID: " + idProducao));
+        producao.setQtdGrad(qtdGrad);
+        producao.setQtdMestrado(qtdMestrado);
+        producao.setQtdDoutorado(qtdDoutorado);
+        producaoRepository.save(producao);
+    }
 
-    // @Transactional
-    // public Producao informarEstatisticasProducao(Producao producao) {
-    //     return producaoRepository.save(producao);
-    // }
+    //Obter orientacaoAssoaciadaAproducao
 
     public List<Orientacao> obterOrientacaoProducao(Integer idProducao) {
         Optional<Producao> producao = producaoRepository.findById(idProducao);
@@ -120,104 +131,5 @@ public class ProducaoService {
         }
         throw new RegrasRunTime("A Producao não existe");
     }
-    /*
-     * public boolean excluirProducao(Integer idProducao){
-     * Optional<Producao> producao = producaoRepository.findById(idProducao);
-     * if(producao.isPresent()){
-     * removerDocentesProducao(idProducao);
-     * removerOrientacoesProducao(idProducao);
-     * producaoRepository.delete(producaoRepository.getReferenceById(idProducao));
-     * return true;
-     * }
-     * if(producaoRepository.existsById(idProducao))
-     * throw new RegrasRunTime("Erro ao Excluir Produção");
-     * throw new RegrasRunTime("Produção Inexistente");
-     * }
-     * 
-     * public boolean retirarProducaoDocente(Integer idProducao, Integer idDocente){
-     * Optional<Producao> opProducao = producaoRepository.findById(idProducao);
-     * if(opProducao.isPresent()){
-     * Producao producao = producaoRepository.getReferenceById(idProducao);
-     * if(docenteRepository.existsById(idDocente)){
-     * Docente docente = docenteRepository.getReferenceById(idDocente);
-     * 
-     * if(docente.getProducoes().remove(producao))
-     * producao.getDocentes().remove(docente);
-     * else
-     * throw new RegrasRunTime("Producao e Docente não possuem Relação");
-     * 
-     * docenteRepository.save(docente);
-     * producaoRepository.save(producao);
-     * return true;
-     * }else{
-     * throw new RegrasRunTime("Docente Inexistente");
-     * }
-     * }
-     * throw new RegrasRunTime("Producao Inexistente");
-     * }
-     * 
-     * 
-     * public boolean retirarProducaoOrientacao(Integer idProducao, Integer
-     * idOrientacao){
-     * Optional<Producao> opProducao = producaoRepository.findById(idProducao);
-     * if(opProducao.isPresent()){
-     * Producao producao = producaoRepository.getReferenceById(idProducao);
-     * if(orientacaoRepository.existsById(idOrientacao)){
-     * Orientacao orientacao = orientacaoRepository.getReferenceById(idOrientacao);
-     * 
-     * if(orientacao.getProducoes().remove(producao))
-     * producao.getOrientacoes().remove(orientacao);
-     * else
-     * throw new RegrasRunTime("Producao e Orientacao não possuem Relação");
-     * 
-     * orientacaoRepository.save(orientacao);
-     * producaoRepository.save(producao);
-     * return true;
-     * }else{
-     * throw new RegrasRunTime("Orientacao Inexistente");
-     * }
-     * }
-     * throw new RegrasRunTime("Producao Inexistente");
-     * }
-     * 
-     * public boolean removerOrientacoesProducao(Integer idProducao){
-     * Optional<Producao> producao = producaoRepository.findById(idProducao);
-     * if(producao.isPresent()){
-     * if(producaoRepository.getReferenceById(idProducao).getOrientacoes() != null
-     * &&
-     * !producaoRepository.getReferenceById(idProducao).getOrientacoes().isEmpty()){
-     * for(int i = 0; i <
-     * producaoRepository.getReferenceById(idProducao).getOrientacoes().size();
-     * i++){
-     * retirarProducaoOrientacao(idProducao,
-     * producaoRepository.getReferenceById(idProducao).getOrientacoes().get(i).getId
-     * ());
-     * }
-     * return true;
-     * }
-     * throw new RegrasRunTime("Não Existem Orientações na Produção");
-     * 
-     * }
-     * throw new RegrasRunTime("Producao Inexistente");
-     * }
-     * 
-     * public boolean removerDocentesProducao(Integer idProducao){
-     * Optional<Producao> producao = producaoRepository.findById(idProducao);
-     * if(producao.isPresent()){
-     * if(producaoRepository.getReferenceById(idProducao).getDocentes() != null
-     * && !producaoRepository.getReferenceById(idProducao).getDocentes().isEmpty()){
-     * for(int i = 0; i <
-     * producaoRepository.getReferenceById(idProducao).getDocentes().size(); i++){
-     * retirarProducaoDocente(idProducao,
-     * producaoRepository.getReferenceById(idProducao).getDocentes().get(i).getId())
-     * ;
-     * }
-     * return true;
-     * }
-     * throw new RegrasRunTime("Não Existem Docentes na Produção");
-     * 
-     * }
-     * throw new RegrasRunTime("Producao Inexistente");
-     * }
-     */
 }
+

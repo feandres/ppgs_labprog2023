@@ -1,22 +1,29 @@
 package br.ufma.sppg.services;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import br.ufma.sppg.excecao.ServicoRuntimeException;
 import br.ufma.sppg.model.Docente;
+import br.ufma.sppg.model.Orientacao;
 import br.ufma.sppg.model.Producao;
 import br.ufma.sppg.model.Programa;
 import br.ufma.sppg.repo.DocenteRepository;
+import br.ufma.sppg.repo.OrientacaoRepository;
 import br.ufma.sppg.repo.ProducaoRepository;
 import br.ufma.sppg.repo.ProgramaRepository;
 import br.ufma.sppg.service.ProducaoService;
 
 @SpringBootTest
-public class ProducaoServiceTest {
+class ProducaoServiceTest {
+
     @Autowired
     ProducaoService producaoService;
 
@@ -33,71 +40,136 @@ public class ProducaoServiceTest {
     OrientacaoRepository orientacaoRepository;
 
     @Test
-    public void deveRecuperarProducoesPorPrograma() throws ParseException {
-        // Cenario:
-        // Programa
-        Programa novoPPg = Programa.builder().nome("Programa para Teste").build();
-        // Docente
-        Docente novoDocente = Docente.builder().nome("Geraldo Braz Junior")
-                .lattes("123")
-                .dataAtualizacao(new SimpleDateFormat("dd/MM/yyyy").parse("23/04/2023"))
-                .producoes(null)
-                .build();
-        // Producao
-        Producao novaProducao = Producao.builder().tipo("tipo_teste")
-                .ano(2019)
-                .issnOuSigla("sigla_teste")
-                .nomeLocal("nome_local_teste")
-                .titulo("titulo_teste")
-                .qualis("B1")
-                .qtdGrad(900)
-                .qtdMestrado(300)
-                .qtdDoutorado(10)
-                .percentileOuH5(10)
-                .build();
+    void obterProducoesPPG_DeveRetornarListaProducoes() {
+        Integer idPrograma = 1;
+        Integer anoInicial = 2020;
+        Integer anoFinal = 2022;
 
-        Producao novaProducao2 = Producao.builder().tipo("tipo_teste2")
-                .ano(2011)
-                .issnOuSigla("sigla_teste2")
-                .nomeLocal("nome_local_teste2")
-                .titulo("titulo_teste2")
-                .qualis("B1")
-                .qtdGrad(900)
-                .qtdMestrado(300)
-                .qtdDoutorado(10)
-                .percentileOuH5(10)
-                .build();
+        Programa programa = new Programa();
+        programa.setId(idPrograma);
+        Docente docente = new Docente();
+        Producao producao1 = new Producao();
+        producao1.setId(1);
+        producao1.setAno(2020);
+        Producao producao2 = new Producao();
+        producao2.setId(2);
+        producao2.setAno(2021);
+        List<Docente> docentes = new ArrayList<>();
+        docentes.add(docente);
+        List<Producao> producoes = new ArrayList<>();
+        producoes.add(producao1);
+        producoes.add(producao2);
 
-        Producao novaProducao3 = Producao.builder().tipo("tipo_teste3")
-                .ano(2019)
-                .issnOuSigla("sigla_teste3")
-                .nomeLocal("nome_local_teste3")
-                .titulo("titulo_teste3")
-                .qualis("B1")
-                .qtdGrad(900)
-                .qtdMestrado(300)
-                .qtdDoutorado(10)
-                .percentileOuH5(10)
-                .build();
+        programa.setDocentes(docentes);
+        docente.setProducoes(producoes);
 
-        Producao novaProducao4 = Producao.builder().tipo("tipo_teste4")
-                .ano(2023)
-                .issnOuSigla("sigla_teste4")
-                .nomeLocal("nome_local_teste4")
-                .titulo("titulo_teste4")
-                .qualis("B1")
-                .qtdGrad(900)
-                .qtdMestrado(300)
-                .qtdDoutorado(10)
-                .percentileOuH5(10)
-                .build();
+        Optional<Programa> programaOptional = Optional.of(programa);
+        when(programaRepository.findById(idPrograma)).thenReturn(programaOptional);
 
-        // Acao:
-        // Save
-        Programa programaSalvo = programaRepository.save(novoPPg);
-        Docente docenteSalvo = docenteRepository.save(novoDocente);
-        Producao producaoSalva = producaoRepository.save(novaProducao);
-        //
+        List<Producao> result = producaoService.obterProducoesPPG(idPrograma, anoInicial, anoFinal);
 
+        assertEquals(2, result.size());
+        assertTrue(result.contains(producao1));
+        assertTrue(result.contains(producao2));
     }
+
+    @Test
+    void obterProducoesPPG_SemProducoesDeveLancarExcecao() {
+        Integer idPrograma = 1;
+        Integer anoInicial = 2020;
+        Integer anoFinal = 2022;
+
+        Programa programa = new Programa();
+        programa.setId(idPrograma);
+        Docente docente = new Docente();
+        List<Docente> docentes = new ArrayList<>();
+        docentes.add(docente);
+
+        programa.setDocentes(docentes);
+
+        Optional<Programa> programaOptional = Optional.of(programa);
+        when(programaRepository.findById(idPrograma)).thenReturn(programaOptional);
+
+        assertThrows(ServicoRuntimeException.class, () ->
+                producaoService.obterProducoesPPG(idPrograma, anoInicial, anoFinal)
+        );
+    }
+
+    @Test
+    void obterProducoesPPG_ProgramaNaoEncontradoDeveLancarExcecao() {
+        Integer idPrograma = 1;
+        Integer anoInicial = 2020;
+        Integer anoFinal = 2022;
+
+        when(programaRepository.findById(idPrograma)).thenReturn(Optional.empty());
+
+        assertThrows(ServicoRuntimeException.class, () ->
+                producaoService.obterProducoesPPG(idPrograma, anoInicial, anoFinal)
+        );
+    }
+
+    // Outros testes para os demais métodos do serviço ProducaoService
+    @Test
+    public void obterProducoesDocente_DeveRetornarListaDeProducoes() {
+        // Criar dados de entrada
+        Integer idDocente = 1;
+        Integer anoInicial = 2019;
+        Integer anoFinal = 2021;
+        
+        // Criar uma lista simulada de produções
+        List<Producao> producoesSimuladas = new ArrayList<>();
+        producoesSimuladas.add(new Producao());
+        producoesSimuladas.add(new Producao());
+
+        // Configurar o comportamento do mock do DocenteRepository
+        Docente docenteSimulado = new Docente();
+        docenteSimulado.setId(idDocente);
+        docenteSimulado.setProducoes(producoesSimuladas);
+        when(docenteRepository.findById(idDocente)).thenReturn(Optional.of(docenteSimulado));
+
+        // Executar o método sendo testado
+        List<Producao> result = producaoService.obterProducoesDocente(idDocente, anoInicial, anoFinal);
+
+        // Verificar o resultado
+        assertEquals(producoesSimuladas.size(), result.size());
+    }
+
+
+    @Test
+    public void informarEstatisticasProducao_DeveAtualizarEstatisticasDaProducao() {
+        // Criar dados de entrada
+        Integer idProducao = 1;
+        Integer qtdGrad = 5;
+        Integer qtdMestrado = 3;
+        Integer qtdDoutorado = 2;
+
+        // Criar um objeto simulado da Producao
+        Producao producaoSimulada = new Producao();
+
+        // Configurar o comportamento do mock do ProducaoRepository
+        when(producaoRepository.findById(idProducao)).thenReturn(Optional.of(producaoSimulada));
+
+        // Executar o método sendo testado
+        producaoService.informarEstatisticasProducao(idProducao, qtdGrad, qtdMestrado, qtdDoutorado);
+
+        // Verificar se as estatísticas foram atualizadas corretamente
+        assertEquals(qtdGrad, producaoSimulada.getQtdGrad());
+        assertEquals(qtdMestrado, producaoSimulada.getQtdMestrado());
+        assertEquals(qtdDoutorado, producaoSimulada.getQtdDoutorado());
+    }
+    
+    @Test
+    public void deveObterOrientacaoProducaoExistente() {
+        // Criar uma produção de exemplo no banco de dados
+        Producao producao = Producao.builder().build();
+        producaoRepository.save(producao);
+
+        // Obter as orientações associadas à produção
+        List<Orientacao> orientacoes = producaoService.obterOrientacaoProducao(producao.getId());
+
+        // Verificar se as orientações foram obtidas corretamente
+        Assertions.assertNotNull(orientacoes);
+        Assertions.assertTrue(orientacoes.isEmpty());
+    }
+
 }
