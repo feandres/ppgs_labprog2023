@@ -109,8 +109,20 @@ public class DocenteTest {
     @Test
     public void deveSalvarDocenteComProducao() throws ParseException {
         // Cenario
+
         Docente novoDocente = criaDocente();
-        Producao novaProd = Producao.builder().titulo("Desenvolvimento de sistemas").build();
+        Producao novaProd = Producao.builder()
+                                            .tipo("teste")
+                                            .titulo("Desenvolvimento de sistemas")
+                                            .issnOuSigla("teste-issn-ou-sigla")
+                                            .nomeLocal("teste-nomeLocal")
+                                            .ano(2021)
+                                            .qualis("teste-qualis")
+                                            .percentileOuH5(0.0f)
+                                            .qtdGrad(1)
+                                            .qtdMestrado(1)
+                                            .qtdDoutorado(1)
+                                            .build();
 
         Docente docenteSalvo = repo.save(novoDocente);
         Producao prodSalva = prodRepository.save(novaProd);
@@ -179,7 +191,17 @@ public class DocenteTest {
         Docente docenteSalvoComTecnica = repo.save(docenteSalvoSemTecnica);
 
         // Producao
-        Producao novaProd = Producao.builder().titulo("Desenvolvimento de sistemas").build();
+        Producao novaProd = Producao.builder().tipo("teste")
+                                            .titulo("Desenvolvimento de sistemas")
+                                            .issnOuSigla("teste-issn-ou-sigla")
+                                            .nomeLocal("teste-nomeLocal")
+                                            .ano(2021)
+                                            .qualis("teste-qualis")
+                                            .percentileOuH5(0.0f)
+                                            .qtdGrad(1)
+                                            .qtdMestrado(1)
+                                            .qtdDoutorado(1)
+                                            .build();
         Producao prodSalva = prodRepository.save(novaProd);
         List<Producao> prods = new ArrayList<Producao>();
         prods.add(prodSalva);
