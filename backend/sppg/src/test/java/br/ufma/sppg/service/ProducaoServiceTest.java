@@ -108,5 +108,49 @@ class ProducaoServiceTest {
         );
     }
 
-    // Outros testes para os demais métodos do serviço ProducaoService
+
+    @Test
+    void informarEstatisticasProducao_NaoDeveSalvarProducaoComEstatisticasInvalidas() {
+        Integer idProducao = 1;
+        Integer qtd_grad = 2;
+        Integer qtd_mestrado = 3;
+        Integer qtd_doutorado = 4;
+
+        Producao producao = new Producao();
+
+        producao.setId(idProducao);
+        producao.setQtdGrad(qtd_grad);
+        producao.setQtdMestrado(qtd_mestrado);
+        producao.setQtdDoutorado(qtd_doutorado);
+
+        when(producaoRepository.findById(idProducao)).thenReturn(Optional.empty());
+        assertThrows(RegrasRunTime.class, () ->
+                producaoService.informarEstatisticasProducao(idProducao, qtd_grad, qtd_mestrado, qtd_doutorado)
+        );
+    }
+
+    @Test
+    void obterProducoesPPG_DeveObterOrientacoesAssociadasAProducao() {
+
+        //Uma orientação -> multiplas producoes
+
+        Integer idProducao = 1;
+
+        Producao producao = new Producao();
+        producao.setId(idProducao);
+        Orientacao orientacao1 = new Orientacao();
+        Orientacao orientacao2 = new Orientacao();
+        List<Orientacao> orientacoes = new ArrayList<>();
+
+        orientacoes.add(orientacao1);
+        orientacoes.add(orientacao2);
+
+        producao.setOrientacoes(orientacoes);
+
+        when(producaoRepository.findById(idProducao)).thenReturn(Optional.empty());
+        assertThrows(RegrasRunTime.class, () ->
+                producaoService.obterOrientacaoProducao(idProducao)
+        );
+
+    }
 }

@@ -17,6 +17,9 @@ import br.ufma.sppg.repo.ProducaoRepository;
 import br.ufma.sppg.repo.ProgramaRepository;
 import br.ufma.sppg.service.exceptions.RegrasRunTime;
 import jakarta.transaction.Transactional;
+import org.springframework.util.Assert;
+
+import static org.springframework.util.Assert.isTrue;
 
 @Service
 public class ProducaoService {
@@ -156,13 +159,21 @@ public class ProducaoService {
     public void informarEstatisticasProducao(Integer idProducao, Integer qtdGrad, Integer qtdMestrado, Integer qtdDoutorado) {
         Producao producao = producaoRepository.findById(idProducao)
                 .orElseThrow(() -> new RegrasRunTime("Produção não encontrada com o ID: " + idProducao));
+
+        if(!(qtdGrad >= 0))
+            throw new RegrasRunTime("Quantidade de graduandos invalida");
+        if(!(qtdMestrado >= 0))
+            throw new RegrasRunTime("Quantidade de mestrandos invalida");
+        if(!(qtdDoutorado >= 0))
+            throw new RegrasRunTime("Quantidade de doutorandos invalida");
+
         producao.setQtdGrad(qtdGrad);
         producao.setQtdMestrado(qtdMestrado);
         producao.setQtdDoutorado(qtdDoutorado);
-        producaoRepository.save(producao);
-    }
 
-    //Obter orientacaoAssoaciadaAproducao
+        producaoRepository.save(producao);
+
+    }
 
     public List<Orientacao> obterOrientacaoProducao(Integer idProducao) {
         Optional<Producao> producao = producaoRepository.findById(idProducao);
