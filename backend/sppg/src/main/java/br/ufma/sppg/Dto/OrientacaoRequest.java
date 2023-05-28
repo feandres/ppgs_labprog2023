@@ -1,4 +1,4 @@
-package br.ufma.sppg.dto;
+package br.ufma.sppg.Dto;
 
 import lombok.Data;
 
