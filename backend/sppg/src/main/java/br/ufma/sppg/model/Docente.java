@@ -47,7 +47,7 @@ public class Docente {
     @Temporal(TemporalType.DATE)
     @Column(name="data_atualizacao")
     Date dataAtualizacao;
-    
+
     @ManyToMany(mappedBy = "docentes")
     List<Programa> programas;
 

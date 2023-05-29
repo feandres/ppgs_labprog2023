@@ -27,7 +27,7 @@ public class DocenteController {
     @Autowired
     ProducaoService producaoService;
 
-    @GetMapping
+    @GetMapping("/obterIndicesCapes")
     public ResponseEntity obterIndicesCapes(
             @RequestParam("docente") Integer idDocente, Integer anoInicial, Integer anoFinal){
 
@@ -39,7 +39,7 @@ public class DocenteController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/obterProducoesPorQualisEAno")
     public ResponseEntity obterProducoesPorQualisEAno(
             @RequestParam("docente") Integer idDocente, String qualis, Integer anoInicial, Integer anoFinal){
 
@@ -57,7 +57,7 @@ public class DocenteController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/obterEstatisticasProducao")
     public ResponseEntity obterEstatisticasProducao(
             @RequestParam("docente") Integer idDocente, Integer anoInicial, Integer anoFinal){
 
