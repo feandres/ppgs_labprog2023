@@ -47,7 +47,7 @@ public class DocenteController {
             List<Producao> producoes = producaoService.obterProducoesPPG(idDocente, anoInicial, anoFinal);
             List<Producao> producoesPorQualisEAno = new ArrayList<>();
             for(Producao p : producoes){
-                if(p.getQualis().equals(qualis) && p.getAno() >= anoInicial && p.getAno() <= anoFinal){
+                if(p.getQualis().equals(qualis)){
                     producoesPorQualisEAno.add(p);
                 }
             }
